@@ -1,0 +1,18 @@
+# The WordPress extension (szepeviktor/phpstan-wordpress) is loaded by phpstan/extension-installer.
+parameters:
+	level: 6
+	paths:
+		- embed-3d-models.php
+		- uninstall.php
+		- src
+	# Optional wp-config constants go here and in tests/phpstan-bootstrap.php.
+	# dynamicConstantNames:
+	#	- EMBED_3D_MODELS_SOMETHING
+	scanFiles:
+		- vendor/php-stubs/wp-cli-stubs/wp-cli-stubs.php
+	bootstrapFiles:
+		- tests/phpstan-bootstrap.php
+	reportUnmatchedIgnoredErrors: false
+	ignoreErrors:
+		# WordPress passes untyped arrays everywhere (hook arguments, options, REST data).
+		- identifier: missingType.iterableValue

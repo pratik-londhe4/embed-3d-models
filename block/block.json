@@ -1,0 +1,41 @@
+{
+	"$schema": "https://schemas.wp.org/trunk/block.json",
+	"apiVersion": 3,
+	"name": "embed-3d-models/model",
+	"title": "3D Model",
+	"category": "media",
+	"description": "Show an interactive 3D model (GLB, glTF, STL or OBJ) that visitors can rotate.",
+	"keywords": [ "3d", "glb", "gltf", "stl", "obj", "model", "ar" ],
+	"textdomain": "embed-3d-models",
+	"attributes": {
+		"id": { "type": "number" },
+		"src": { "type": "string", "default": "" },
+		"alt": { "type": "string", "default": "" },
+		"caption": { "type": "string", "default": "" },
+		"posterId": { "type": "number" },
+		"poster": { "type": "string", "default": "" },
+		"height": { "type": "string", "default": "480px" },
+		"backgroundColor": { "type": "string", "default": "" },
+		"autoRotate": { "type": "boolean", "default": true },
+		"cameraControls": { "type": "boolean", "default": true },
+		"allowZoom": { "type": "boolean", "default": false },
+		"ar": { "type": "boolean", "default": false },
+		"iosId": { "type": "number" },
+		"iosSrc": { "type": "string", "default": "" },
+		"exposure": { "type": "number", "default": 1 },
+		"shadowIntensity": { "type": "number", "default": 1 },
+		"cameraOrbit": { "type": "string", "default": "" },
+		"loading": { "type": "string", "enum": [ "lazy", "eager" ], "default": "lazy" },
+		"reveal": { "type": "string", "enum": [ "auto", "manual" ], "default": "auto" },
+		"autoplay": { "type": "boolean", "default": false }
+	},
+	"supports": {
+		"align": [ "wide", "full" ],
+		"anchor": true,
+		"html": false,
+		"spacing": { "margin": true }
+	},
+	"editorScript": "embed-3d-models-editor",
+	"viewScript": "embed-3d-models-view",
+	"style": "embed-3d-models"
+}

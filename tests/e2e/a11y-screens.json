@@ -1,0 +1,34 @@
+{
+	"screens": [
+		{
+			"name": "Front end: 3D model with click to load",
+			"setup": [ { "js": "a11y-seed.js", "call": "seed", "args": [ "@request" ], "save": "post" } ],
+			"url": "/?p={post}",
+			"loggedOut": true,
+			"steps": [ { "waitFor": "figure.e3dm-figure .e3dm-load" } ],
+			"include": [ "figure.e3dm-figure" ],
+			"cleanup": [ [ "post", "delete", "{post}", "--force" ] ]
+		},
+		{
+			"name": "Editor: 3D Model block settings",
+			"setup": [ { "js": "a11y-seed.js", "call": "seed", "args": [ "@request" ], "save": "post" } ],
+			"editor": "{post}",
+			"steps": [
+				{ "evaluate": "wp.data.dispatch( 'core/block-editor' ).selectBlock( wp.data.select( 'core/block-editor' ).getBlocks()[0].clientId )" },
+				{ "waitFor": "role=textbox[name=/Alternative text/]" },
+				{ "click": "role=button[name=/Poster and loading/]" },
+				{ "click": "role=button[name=/Augmented reality/]" }
+			],
+			"include": [ ".block-editor-block-inspector" ],
+			"cleanup": [ [ "post", "delete", "{post}", "--force" ] ]
+		},
+		{
+			"name": "Editor: empty 3D Model block",
+			"setup": [ { "js": "a11y-seed.js", "call": "seed", "args": [ "@request", true ], "save": "post" } ],
+			"editor": "{post}",
+			"include": [ "iframe[name=editor-canvas]" ],
+			"cleanup": [ [ "post", "delete", "{post}", "--force" ] ]
+		}
+	],
+	"skip": {}
+}

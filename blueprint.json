@@ -1,0 +1,34 @@
+{
+	"$schema": "https://playground.wordpress.net/blueprint-schema.json",
+	"meta": {
+		"title": "Embed 3D Models demo",
+		"author": "pratiklondhe"
+	},
+	"landingPage": "/wp-admin/post.php?post=100&action=edit",
+	"preferredVersions": {
+		"php": "8.3",
+		"wp": "latest"
+	},
+	"features": {
+		"networking": true
+	},
+	"login": true,
+	"steps": [
+		{
+			"step": "installPlugin",
+			"pluginData": {
+				"resource": "git:directory",
+				"url": "https://github.com/pratik-londhe4/embed-3d-models",
+				"ref": "main"
+			},
+			"options": {
+				"activate": true,
+				"targetFolderName": "embed-3d-models"
+			}
+		},
+		{
+			"step": "runPHP",
+			"code": "<?php require_once '/wordpress/wp-load.php'; require_once ABSPATH . 'wp-admin/includes/image.php'; wp_set_current_user( 1 ); $tris = array(); $n = 160; $s = 12; $ring = function ( $i ) use ( $n, $s ) { $t = $i / $n * 2 * M_PI; $c = function ( $t ) { $r = 30 * ( 2 + cos( 3 * $t ) ) / 3; return array( $r * cos( 2 * $t ), $r * sin( 2 * $t ), 10 * sin( 3 * $t ) + 20 ); }; $p = $c( $t ); $q = $c( $t + 0.01 ); $tg = array( $q[0] - $p[0], $q[1] - $p[1], $q[2] - $p[2] ); $l = sqrt( $tg[0] ** 2 + $tg[1] ** 2 + $tg[2] ** 2 ); $tg = array( $tg[0] / $l, $tg[1] / $l, $tg[2] / $l ); $nm = array( $tg[1], -$tg[0], 0 ); $l = sqrt( $nm[0] ** 2 + $nm[1] ** 2 ) ?: 1; $nm = array( $nm[0] / $l, $nm[1] / $l, 0 ); $bn = array( $tg[1] * $nm[2] - $tg[2] * $nm[1], $tg[2] * $nm[0] - $tg[0] * $nm[2], $tg[0] * $nm[1] - $tg[1] * $nm[0] ); $out = array(); for ( $j = 0; $j < $s; $j++ ) { $a = $j / $s * 2 * M_PI; $out[] = array( $p[0] + 7 * ( cos( $a ) * $nm[0] + sin( $a ) * $bn[0] ), $p[1] + 7 * ( cos( $a ) * $nm[1] + sin( $a ) * $bn[1] ), $p[2] + 7 * ( cos( $a ) * $nm[2] + sin( $a ) * $bn[2] ) ); } return $out; }; $rings = array(); for ( $i = 0; $i < $n; $i++ ) { $rings[] = $ring( $i ); } for ( $i = 0; $i < $n; $i++ ) { $a = $rings[ $i ]; $b = $rings[ ( $i + 1 ) % $n ]; for ( $j = 0; $j < $s; $j++ ) { $k = ( $j + 1 ) % $s; $tris[] = array( $a[ $j ], $b[ $j ], $b[ $k ] ); $tris[] = array( $a[ $j ], $b[ $k ], $a[ $k ] ); } } $stl = str_pad( 'torus knot', 80 ) . pack( 'V', count( $tris ) ); foreach ( $tris as $t ) { $stl .= pack( 'g12', 0, 0, 0, $t[0][0], $t[0][1], $t[0][2], $t[1][0], $t[1][1], $t[1][2], $t[2][0], $t[2][1], $t[2][2] ) . \"\\0\\0\"; } $up = wp_upload_bits( 'torus-knot.stl', null, $stl ); $id = wp_insert_attachment( array( 'post_mime_type' => 'model/stl', 'post_title' => 'Torus knot', 'post_status' => 'inherit' ), $up['file'] ); wp_update_attachment_metadata( $id, wp_generate_attachment_metadata( $id, $up['file'] ) ); $p = function ( $text ) { return '<!-- wp:paragraph --><p>' . $text . '</p><!-- /wp:paragraph -->'; }; wp_insert_post( array( 'import_id' => 100, 'post_title' => 'A knot for the shelf', 'post_status' => 'publish', 'post_author' => 1, 'post_content' => $p( 'I printed this torus knot last weekend. Turn it around to see how the loops cross.' ) . \"\\n\\n\" . '<!-- wp:embed-3d-models/model {\"id\":' . $id . ',\"alt\":\"A grey torus knot\",\"caption\":\"Uploaded as an STL file, converted to GLB by the plugin.\"} /-->' ) );"
+		}
+	]
+}
